@@ -1,77 +1,43 @@
 import math
 
-
-def calculate_exponential(x, n):
-    """Calculate e^x using the Maclaurin series."""
-
+def build_series(term_function, n):
     terms = []
     partial_sums = []
     total = 0
 
     for k in range(n):
-        term = (x ** k) / math.factorial(k)
-
+        term = term_function(k)
         total += term
+
         terms.append(term)
         partial_sums.append(total)
 
     return terms, partial_sums
+def calculate_exponential(x, n):
+    """Calculate e^x using the Maclaurin series."""
 
+    return build_series(lambda k: (x ** k) / math.factorial(k), n)
 
 def calculate_logarithm(x, n):
     """Calculate ln(x) using the Taylor series centered at 1."""
+    
+    if x <= 0:
+        raise ValueError("x must be greater than 0 for ln(x).")
 
-    terms = []
-    partial_sums = []
-    total = 0
-
-    for k in range(1, n + 1):
-        term = ((-1) ** (k + 1) * (x - 1) ** k) / k
-
-        total += term
-        terms.append(term)
-        partial_sums.append(total)
-
-    return terms, partial_sums
-
+    return build_series(lambda k: ((-1) ** (k + 1)) * ((x - 1) ** k) / k, n, start=1)
+   
 
 def calculate_sine(x, n):
     """Calculate sin(x) using the Maclaurin series."""
 
-    terms = []
-    partial_sums = []
-    total = 0
-
-    for k in range(n):
-        term = ((-1) ** k * x ** (2 * k + 1)) / math.factorial(2 * k + 1)
-
-        total += term
-        terms.append(term)
-        partial_sums.append(total)
-
-    return terms, partial_sums
-
+    return build_series(lambda k: ((-1) ** k) * (x ** (2 * k + 1)) / math.factorial(2 * k + 1), n)
 
 def calculate_cosine(x, n):
     """Calculate cos(x) using the Maclaurin series."""
 
-    terms = []
-    partial_sums = []
-    total = 0
-
-    for k in range(n):
-        term = ((-1) ** k * x ** (2 * k)) / math.factorial(2 * k)
-
-        total += term
-        terms.append(term)
-        partial_sums.append(total)
-
-    return terms, partial_sums
-
-
+    return build_series(lambda k: ((-1) ** k) * (x ** (2 * k)) / math.factorial(2 * k), n)
 def calculate_tangent(x, n):
-    """Calculate tan(x) using the first five specified terms."""
-
+    """Calculate tan(x) using the first five Taylor terms."""
     coefficients = [
         1,
         1 / 3,
@@ -80,19 +46,17 @@ def calculate_tangent(x, n):
         62 / 2835
     ]
 
-    terms = []
-    partial_sums = []
-    total = 0
+    if n > len(coefficients):
+        raise ValueError("Tangent is limited to 5 terms.")
 
-    for k in range(n):
-        term = coefficients[k] * (x ** (2 * k + 1))
+    if x <= -math.pi / 2 or x >= math.pi / 2:
+        raise ValueError("x must be in the range (-pi/2, pi/2).")
 
-        total += term
-        terms.append(term)
-        partial_sums.append(total)
-
-    return terms, partial_sums
-
+    return build_series(
+        lambda k: coefficients[k] * x ** (2 * k + 1),
+        n
+    )
+   
 
 def calculate_series(function, x, n):
     """Select the appropriate series calculation."""
