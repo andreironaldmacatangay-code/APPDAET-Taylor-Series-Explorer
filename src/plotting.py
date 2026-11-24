@@ -2,7 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.series import calculate_series
+from series import calculate_series
 
 
 def get_reference_function(function):
