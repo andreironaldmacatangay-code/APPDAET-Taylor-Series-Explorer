@@ -1,12 +1,16 @@
+
 import math
 import numpy as np
+import matplotlib
+
+matplotlib.use("TkAgg")
+
 import matplotlib.pyplot as plt
 
 from series import calculate_series
 
 
 def get_reference_function(function):
-    """Return the actual mathematical function for comparison."""
 
     reference_functions = {
         "exp": math.exp,
@@ -23,7 +27,6 @@ def get_reference_function(function):
 
 
 def get_function_domain(function):
-    """Return the supported x-range of the selected function."""
 
     domains = {
         "exp": (-2, 2),
@@ -37,7 +40,6 @@ def get_function_domain(function):
 
 
 def plot_comparison(function, x, n):
-    """Plot the reference function and its Taylor approximation."""
 
     reference_function = get_reference_function(function)
 
@@ -50,25 +52,31 @@ def plot_comparison(function, x, n):
 
     for value in x_values:
 
-        # Calculate the actual function value
-        reference_values.append(reference_function(value))
+        # Calculate actual function value
+        reference_values.append(
+            reference_function(float(value))
+        )
 
-        # Calculate the Taylor series approximation
-        terms, partial_sums = calculate_series(function, value, n)
+        # Calculate Taylor approximation
+        terms, partial_sums = calculate_series(
+            function,
+            float(value),
+            n
+        )
 
         approximation_values.append(partial_sums[-1])
 
-    # Create the graph
-    plt.figure(figsize=(9, 5))
+    # Create graph
+    fig, ax = plt.subplots(figsize=(9, 5))
 
-    plt.plot(
+    ax.plot(
         x_values,
         reference_values,
         label="Reference Function",
         linewidth=2
     )
 
-    plt.plot(
+    ax.plot(
         x_values,
         approximation_values,
         label="Taylor Approximation",
@@ -76,15 +84,17 @@ def plot_comparison(function, x, n):
         linewidth=2
     )
 
-    # Mark the selected input value
-    plt.axvline(x=x, linestyle=":", alpha=0.6)
+    ax.axvline(x=x, linestyle=":", alpha=0.6,
+               label="Selected x")
 
-    plt.title(f"Taylor Series Approximation - {function}")
-    plt.xlabel("x")
-    plt.ylabel("Function Value")
+    ax.set_title(f"Taylor Series Approximation - {function}")
+    ax.set_xlabel("x")
+    ax.set_ylabel("Function Value")
 
-    plt.legend()
-    plt.grid(True, alpha=0.3)
+    ax.legend()
+    ax.grid(True, alpha=0.3)
 
-    plt.tight_layout()
-    plt.show()
+    fig.tight_layout()
+
+    # Display graph
+    plt.show(block=True)
