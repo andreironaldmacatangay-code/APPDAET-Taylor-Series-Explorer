@@ -1,11 +1,11 @@
 import math
 
-def build_series(term_function, n):
+def build_series(term_function, n, start=0):
     terms = []
     partial_sums = []
     total = 0
 
-    for k in range(n):
+    for k in range(start, start + n):
         term = term_function(k)
         total += term
 
