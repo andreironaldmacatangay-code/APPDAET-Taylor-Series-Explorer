@@ -10,9 +10,8 @@ import math
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-from src.series import calculate_series
-from src.plotting import plot_comparison
-
+from series import calculate_series
+from plotting import plot_comparison
 
 class TaylorSeriesExplorer:
 
